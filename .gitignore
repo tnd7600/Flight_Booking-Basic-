@@ -6,6 +6,12 @@ __pycache__/
 # C extensions
 *.so
 
+
+Flight_Booking
+alembic
+alembic.ini
+Flight_Booking.db
+
 # Distribution / packaging
 .Python
 build/
