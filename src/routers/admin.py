@@ -4,6 +4,7 @@ from src.schemas.admin import (
     Staff_Register_Schema,
     Admin_Register_Schema,
     Get_All_User_Schema,
+    Update_Staff_Schema
 )
 from src.utils.admin import (
     pass_checker,
@@ -90,6 +91,35 @@ def Add_New_Staff(staff: Staff_Register_Schema, token: str = Header(...)):
 
     logger.success(f"Staff {staff.name} registered successfully.")
     return "Staff Registered Successfully"
+
+
+
+@admin_router.put("/update_staff/{staff_id}")
+def Update_Staff(staff_id: str, staff: Update_Staff_Schema, token: str = Header(...)):
+    logger.info(f"Updating staff with ID: {staff_id}")
+    user_details = decode_token(token)
+    id, post = user_details
+
+    if post not in ["admin", "manager"]:
+        logger.error("Access forbidden during staff update.")
+        raise HTTPException(status_code=400, detail="Access forbidden")
+
+    existing_staff = db.query(Admin).filter(Admin.id == staff_id).first()
+
+    if not existing_staff:
+        logger.error("Staff not found.")
+        raise HTTPException(status_code=404, detail="Staff not found")
+
+    existing_staff.name = staff.name
+    existing_staff.user_name = staff.user_name
+    existing_staff.email = staff.email
+
+    db.commit()
+    logger.success(f"Staff {existing_staff.name} updated successfully.")
+    return "Staff Updated Successfully"
+
+
+####-------------------------------------------------------------------------------------------------####
 
 
 @admin_router.get("/get_all_users_data", response_model=list[Get_All_User_Schema])

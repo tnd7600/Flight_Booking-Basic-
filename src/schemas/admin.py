@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr, Field
-
+from typing import Optional
 
 
 class Staff_Register_Schema(BaseModel):
@@ -63,3 +63,11 @@ class Get_All_User_Schema(BaseModel):
                 "email": "john.doe@example.com",
             }
         }
+
+
+
+class Update_Staff_Schema(BaseModel):
+    name: Optional[str] = None
+    user_name: Optional[str] = None
+    email: Optional[EmailStr] = None
+
